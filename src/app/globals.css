@@ -2,25 +2,142 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #14162b;
+
+  /* Marka renkleri: LinguaPro — güven veren indigo + enerjik amber */
+  --brand-50: #eef1ff;
+  --brand-100: #e0e4ff;
+  --brand-200: #c6ccff;
+  --brand-300: #a3a8ff;
+  --brand-400: #7d7bfb;
+  --brand-500: #6154f0;
+  --brand-600: #4f3ed6;
+  --brand-700: #4231ac;
+  --brand-800: #372b89;
+  --brand-900: #302870;
+  --brand-950: #1c1745;
+
+  --accent-400: #ffb648;
+  --accent-500: #ff9d1f;
+  --accent-600: #ee8300;
+
+  --ink-950: #0b0c1a;
+  --ink-900: #14162b;
+  --ink-700: #3a3d5c;
+  --ink-500: #6b6f92;
+  --ink-300: #a7abc8;
+  --ink-100: #e7e9f5;
+  --ink-50: #f5f6fc;
+
+  --success: #16a34a;
+  --danger: #dc2626;
+
+  --radius-lg: 1.25rem;
+  --radius-md: 0.875rem;
+  --shadow-soft: 0 20px 50px -20px rgba(30, 24, 90, 0.25);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-950: var(--brand-950);
+
+  --color-accent-400: var(--accent-400);
+  --color-accent-500: var(--accent-500);
+  --color-accent-600: var(--accent-600);
+
+  --color-ink-950: var(--ink-950);
+  --color-ink-900: var(--ink-900);
+  --color-ink-700: var(--ink-700);
+  --color-ink-500: var(--ink-500);
+  --color-ink-300: var(--ink-300);
+  --color-ink-100: var(--ink-100);
+  --color-ink-50: var(--ink-50);
+
+  --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+::selection {
+  background: var(--brand-300);
+  color: var(--brand-950);
+}
+
+/* Yumuşak scroll (proxy tarafında override edilmiyor; Next.js 16 varsayılanı) */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ortak dekoratif desen: nokta ızgarası */
+.bg-dot-grid {
+  background-image: radial-gradient(circle, rgba(97, 84, 240, 0.18) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+.bg-noise {
+  position: relative;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-18px) rotate(3deg); }
+}
+.animate-float-slow {
+  animation: float-slow 7s ease-in-out infinite;
+}
+
+@keyframes float-slower {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(-4deg); }
+}
+.animate-float-slower {
+  animation: float-slower 9s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Odak stilleri: erişilebilirlik */
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
 }
