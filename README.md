@@ -213,20 +213,13 @@ gerektirebilir, güncel koşulları railway.com üzerinden kontrol edin).
    → `npm run build` → `npm run start` adımlarını kendisi çalıştırır;
    ekstra ayara gerek yoktur. `next start`, Railway'in verdiği `PORT`
    ortam değişkenini otomatik kullanır.
-6. İlk deploy tamamlandıktan sonra veritabanı şemasını oluşturup demo
-   verileri yüklemeniz gerekir. En kolay yol: [Railway
-   CLI](https://docs.railway.com/guides/cli)'yi kurup projeye bağlanarak
-   canlı veritabanına karşı çalıştırmak:
-   ```bash
-   npm i -g @railway/cli
-   railway login
-   railway link          # bu projeyi seçin
-   railway run npm run db:migrate
-   railway run npm run db:seed
-   ```
-   (Alternatif olarak yerel makinenizde `.env` içindeki `DATABASE_URL`'i
-   geçici olarak Railway'in verdiği canlı adrese ayarlayıp aynı iki
-   komutu yerelden de çalıştırabilirsiniz.)
+6. **Veritabanı şeması ve demo veriler otomatik yüklenir — ekstra komut
+   çalıştırmanıza gerek yok.** `npm run start` komutu artık şu sırayla
+   çalışıyor: `db:migrate` (şema oluştur/güncelle) → `db:seed` (demo
+   kullanıcı/kurs/sınav verisi — veri zaten varsa otomatik atlanır,
+   yani her yeniden deploy'da tekrar çalışması zararsızdır) → `next
+   start`. Yani CLI kurmadan, telefon dahil herhangi bir cihazdan sadece
+   web arayüzü üzerinden deploy edebilirsiniz.
 7. Deploy tamamlanınca **Settings → Networking → Generate Domain** ile
    ücretsiz bir `*.up.railway.app` adresi alırsınız; site o adreste
    canlıya çıkar. Demo giriş bilgileri "Demo Hesaplar" bölümündedir.

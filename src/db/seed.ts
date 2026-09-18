@@ -14,6 +14,15 @@ async function hash(pw: string) {
 }
 
 async function main() {
+  // Idempotent: uygulama her başladığında (örn. Railway yeniden deploy /
+  // restart) otomatik çalıştırılabilmesi için, veri zaten varsa atla.
+  const existing = await db.select({ id: schema.users.id }).from(schema.users).limit(1);
+  if (existing.length > 0) {
+    console.log("Seed verisi zaten mevcut, atlanıyor.");
+    await pool.end();
+    return;
+  }
+
   console.log("Seed verisi oluşturuluyor...\n");
 
   // ---------- Kullanıcılar ----------
