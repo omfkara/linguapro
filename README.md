@@ -179,6 +179,62 @@ src/
 Bu proje herhangi bir Node.js destekleyen platformda (Vercel, Railway,
 Render, kendi sunucunuz) çalışır.
 
+### Railway (ücretsiz deneme için en hızlı yol)
+
+Railway hem uygulamayı hem de PostgreSQL veritabanını aynı projede
+barındırabildiği için demo/ücretsiz deneme amaçlı en pratik seçenektir.
+Yeni hesaplar bir miktar ücretsiz kullanım kredisiyle başlar (kredi kartı
+gerektirebilir, güncel koşulları railway.com üzerinden kontrol edin).
+
+1. **Kodu GitHub'a yükleyin.** Railway, GitHub reposuna bağlanarak deploy
+   eder. GitHub'da boş bir repo oluşturup şu projeyi push edin:
+   ```bash
+   git remote add origin https://github.com/<kullanici-adiniz>/linguapro.git
+   git branch -M main
+   git push -u origin main
+   ```
+2. **railway.com** adresinde ücretsiz hesap açın (GitHub ile giriş
+   yapabilirsiniz) → **New Project** → **Deploy from GitHub repo** →
+   yukarıda push ettiğiniz repoyu seçin.
+3. Aynı proje içinde **+ New** → **Database** → **Add PostgreSQL** ile
+   bir veritabanı ekleyin. Railway `DATABASE_URL` değişkenini otomatik
+   üretir.
+4. Uygulama servisinin **Variables** sekmesine girip şunları ekleyin
+   (DATABASE_URL'i Postgres servisinden referans olarak bağlayabilir ya
+   da değerini kopyalayabilirsiniz):
+   - `DATABASE_URL` → Postgres servisindeki bağlantı adresi
+     (`${{Postgres.DATABASE_URL}}` referansıyla otomatik bağlanabilir)
+   - `AUTH_SECRET` → `openssl rand -base64 32` ile üretin
+   - `NEXTAUTH_URL` → Railway'in size verdiği genel adres
+     (örn. `https://linguapro-production.up.railway.app`)
+   - `NEXT_PUBLIC_SITE_URL` → aynı adres
+   - `NEXT_PUBLIC_SITE_NAME` → `LinguaPro Dil Akademisi`
+5. Railway, Next.js projesini otomatik tanır (Nixpacks) ve `npm install`
+   → `npm run build` → `npm run start` adımlarını kendisi çalıştırır;
+   ekstra ayara gerek yoktur. `next start`, Railway'in verdiği `PORT`
+   ortam değişkenini otomatik kullanır.
+6. İlk deploy tamamlandıktan sonra veritabanı şemasını oluşturup demo
+   verileri yüklemeniz gerekir. En kolay yol: [Railway
+   CLI](https://docs.railway.com/guides/cli)'yi kurup projeye bağlanarak
+   canlı veritabanına karşı çalıştırmak:
+   ```bash
+   npm i -g @railway/cli
+   railway login
+   railway link          # bu projeyi seçin
+   railway run npm run db:migrate
+   railway run npm run db:seed
+   ```
+   (Alternatif olarak yerel makinenizde `.env` içindeki `DATABASE_URL`'i
+   geçici olarak Railway'in verdiği canlı adrese ayarlayıp aynı iki
+   komutu yerelden de çalıştırabilirsiniz.)
+7. Deploy tamamlanınca **Settings → Networking → Generate Domain** ile
+   ücretsiz bir `*.up.railway.app` adresi alırsınız; site o adreste
+   canlıya çıkar. Demo giriş bilgileri "Demo Hesaplar" bölümündedir.
+
+> Not: Bu sandbox ortamının kendi GitHub/Railway hesabınıza erişimi
+> yok, bu yüzden push ve deploy adımlarını kendi hesabınızdan
+> yapmanız gerekiyor — yukarıdaki adımlar 5-10 dakika sürer.
+
 ### Vercel + Neon/Supabase (önerilen, hızlı başlangıç)
 
 1. [Neon](https://neon.tech) veya [Supabase](https://supabase.com)'de
