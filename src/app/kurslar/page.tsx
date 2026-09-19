@@ -16,7 +16,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/kurslar" },
 };
 
-export const revalidate = 60;
+// Build anında (ör. veritabanının erişilebilir olmadığı bir build
+// ortamında) statik olarak dışa aktarılmaya çalışılırsa hataya yol
+// açar; bu yüzden ISR (revalidate) yerine her istekte dinamik render
+// zorunlu kılınıyor.
+export const dynamic = "force-dynamic";
 
 export default async function CoursesPage() {
   const courseList = await getPublishedCourses();

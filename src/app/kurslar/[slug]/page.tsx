@@ -18,6 +18,12 @@ import {
 } from "lucide-react";
 import { formatDuration } from "@/lib/utils";
 
+// Bu sayfa veritabanına bağlıdır; build anında statik olarak
+// dışa aktarılmaya çalışılırsa (ör. veritabanının erişilebilir
+// olmadığı bir build ortamında) hataya yol açar. Her istekte
+// sunucu tarafında dinamik olarak render edilmesini zorunlu kılar.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {
