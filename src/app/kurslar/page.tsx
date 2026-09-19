@@ -7,14 +7,19 @@ import { CtaSection } from "@/components/site/cta-section";
 import { BreadcrumbJsonLd } from "@/components/site/json-ld";
 import { getPublishedCourses } from "@/lib/queries/courses";
 import { SITE } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/queries/settings";
 import { BookX } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Kurslar",
-  description:
-    "İngilizce, Almanca, Fransızca ve daha fazla dilde seviyenize uygun online kursları keşfedin.",
-  alternates: { canonical: "/kurslar" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seoTitles.kurslar || "Kurslar",
+    description:
+      settings.seoDescriptions.kurslar ||
+      "İngilizce, Almanca, Fransızca ve daha fazla dilde seviyenize uygun online kursları keşfedin.",
+    alternates: { canonical: "/kurslar" },
+  };
+}
 
 // Build anında (ör. veritabanının erişilebilir olmadığı bir build
 // ortamında) statik olarak dışa aktarılmaya çalışılırsa hataya yol

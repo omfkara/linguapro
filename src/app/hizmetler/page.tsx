@@ -6,6 +6,7 @@ import { PageHero } from "@/components/site/page-hero";
 import { CtaSection } from "@/components/site/cta-section";
 import { BreadcrumbJsonLd } from "@/components/site/json-ld";
 import { SITE } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/queries/settings";
 import {
   Video,
   ClipboardCheck,
@@ -17,12 +18,16 @@ import {
   Check,
 } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Hizmetlerimiz",
-  description:
-    "Bireysel online dil eğitiminden kurumsal eğitim çözümlerine, video ders kütüphanesinden sertifikalı sınav sistemine kadar tüm hizmetlerimiz.",
-  alternates: { canonical: "/hizmetler" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seoTitles.hizmetler || "Hizmetlerimiz",
+    description:
+      settings.seoDescriptions.hizmetler ||
+      "Bireysel online dil eğitiminden kurumsal eğitim çözümlerine, video ders kütüphanesinden sertifikalı sınav sistemine kadar tüm hizmetlerimiz.",
+    alternates: { canonical: "/hizmetler" },
+  };
+}
 
 const SERVICES = [
   {

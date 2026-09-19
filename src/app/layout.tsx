@@ -10,59 +10,75 @@ import "@fontsource/sora/700.css";
 import "@fontsource/sora/800.css";
 import "./globals.css";
 import { SITE } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/queries/settings";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE.url),
-  title: {
-    default: `${SITE.name} | ${SITE.tagline}`,
-    template: `%s | ${SITE.name}`,
-  },
-  description: SITE.description,
-  keywords: SITE.keywords,
-  authors: [{ name: SITE.name, url: SITE.url }],
-  creator: SITE.name,
-  publisher: SITE.name,
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+// Bu layout artık veritabanından (site ayarları) okuyor; build anında
+// statik olarak dışa aktarılmaya çalışılırsa (ör. veritabanının
+// erişilebilir olmadığı bir build ortamında) hataya yol açar. Her
+// istekte sunucu tarafında dinamik olarak render edilmesini zorunlu
+// kılar. Layout tüm sayfalar tarafından paylaşıldığı için bu, tüm
+// siteyi dinamik render'a zorunlu kılar.
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const name = settings.siteName;
+  const tagline = settings.tagline;
+  const description = settings.description;
+
+  return {
+    metadataBase: new URL(SITE.url),
+    title: {
+      default: `${name} | ${tagline}`,
+      template: `%s | ${name}`,
+    },
+    description,
+    keywords: SITE.keywords,
+    authors: [{ name, url: SITE.url }],
+    creator: name,
+    publisher: name,
+    robots: {
       index: true,
       follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-  alternates: {
-    canonical: "/",
-  },
-  openGraph: {
-    type: "website",
-    locale: "tr_TR",
-    url: SITE.url,
-    siteName: SITE.name,
-    title: `${SITE.name} | ${SITE.tagline}`,
-    description: SITE.description,
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: SITE.name,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
       },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `${SITE.name} | ${SITE.tagline}`,
-    description: SITE.description,
-    images: ["/og-image.png"],
-  },
-  icons: {
-    icon: "/favicon.ico",
-  },
-  category: "education",
-};
+    },
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      type: "website",
+      locale: "tr_TR",
+      url: SITE.url,
+      siteName: name,
+      title: `${name} | ${tagline}`,
+      description,
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          alt: name,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${name} | ${tagline}`,
+      description,
+      images: ["/og-image.png"],
+    },
+    icons: {
+      icon: settings.logoUrl || "/favicon.ico",
+    },
+    category: "education",
+  };
+}
 
 export default function RootLayout({
   children,

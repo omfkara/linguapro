@@ -295,6 +295,74 @@ export const contactMessages = pgTable("contact_messages", {
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
+// ---------- Site Ayarları (admin panelinden düzenlenen içerik) ----------
+// Tek satırlık (singleton) tablo: id her zaman 1. Ana sayfa, navbar,
+// footer, seviye testi sayfası ve SEO başlıkları burayı okur; boş/eksik
+// alanlarda kod içindeki varsayılanlara düşülür (bkz. src/lib/queries/settings.ts).
+export const siteSettings = pgTable("site_settings", {
+  id: integer("id").primaryKey().default(1),
+
+  // Genel
+  logoUrl: text("logo_url"),
+  siteName: text("site_name"),
+  shortName: text("short_name"),
+  tagline: text("tagline"),
+  description: text("description"),
+
+  // İletişim & Sosyal Medya
+  phone: text("phone"),
+  email: text("email"),
+  address: text("address"),
+  instagramUrl: text("instagram_url"),
+  youtubeUrl: text("youtube_url"),
+  linkedinUrl: text("linkedin_url"),
+
+  // Sunulan diller (Ana Sayfa kayan şerit)
+  languages: jsonb("languages").$type<
+    { name: string; flag: string; students: string }[]
+  >(),
+
+  // Ana Sayfa Hero Slider
+  heroSlides: jsonb("hero_slides").$type<
+    {
+      eyebrow: string;
+      title: string;
+      highlight: string;
+      titleEnd: string;
+      description: string;
+      statValue: string;
+      statLabel: string;
+    }[]
+  >(),
+
+  // Ana Sayfa istatistik kutuları
+  stats: jsonb("stats").$type<
+    { value: number; suffix: string; label: string }[]
+  >(),
+
+  // "Dört Adımda Hedefinize Ulaşın" bölümü
+  howItWorksEyebrow: text("how_it_works_eyebrow"),
+  howItWorksTitle: text("how_it_works_title"),
+  howItWorksSteps: jsonb("how_it_works_steps").$type<
+    { title: string; description: string }[]
+  >(),
+
+  // Seviye Tespit Sınavı sayfası metinleri
+  levelTestEyebrow: text("level_test_eyebrow"),
+  levelTestTitle: text("level_test_title"),
+  levelTestDescription: text("level_test_description"),
+  levelTestReadyTitle: text("level_test_ready_title"),
+  levelTestNotReadyTitle: text("level_test_not_ready_title"),
+  levelTestLoggedInText: text("level_test_logged_in_text"),
+  levelTestGuestText: text("level_test_guest_text"),
+
+  // Sayfa başlıkları (tarayıcı sekmesi / SEO)
+  seoTitles: jsonb("seo_titles").$type<Record<string, string>>(),
+  seoDescriptions: jsonb("seo_descriptions").$type<Record<string, string>>(),
+
+  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+});
+
 // ---------- Rate limiting (giriş denemeleri için güvenlik) ----------
 export const loginAttempts = pgTable(
   "login_attempts",

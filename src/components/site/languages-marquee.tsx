@@ -1,7 +1,7 @@
-import { LANGUAGES } from "@/lib/site-config";
+type Language = { name: string; flag: string; students: string };
 
-export function LanguagesMarquee() {
-  const items = [...LANGUAGES, ...LANGUAGES];
+export function LanguagesMarquee({ languages }: { languages: Language[] }) {
+  const items = [...languages, ...languages];
   return (
     <div className="border-y border-ink-100 bg-ink-50/60 py-6">
       <div className="mx-auto max-w-7xl overflow-hidden px-5 lg:px-8">

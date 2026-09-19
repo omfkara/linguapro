@@ -4,24 +4,30 @@ import { Footer } from "@/components/site/footer";
 import { PageHero } from "@/components/site/page-hero";
 import { BreadcrumbJsonLd } from "@/components/site/json-ld";
 import { SITE } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/queries/settings";
 import { ContactForm } from "./contact-form";
 import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "İletişim",
-  description:
-    "Sorularınız için bize ulaşın. LinguaPro Dil Akademisi ekibi en kısa sürede size dönüş yapacaktır.",
-  alternates: { canonical: "/iletisim" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seoTitles.iletisim || "İletişim",
+    description:
+      settings.seoDescriptions.iletisim ||
+      "Sorularınız için bize ulaşın. LinguaPro Dil Akademisi ekibi en kısa sürede size dönüş yapacaktır.",
+    alternates: { canonical: "/iletisim" },
+  };
+}
 
-const CONTACT_ITEMS = [
-  { icon: Phone, label: "Telefon", value: SITE.phone },
-  { icon: Mail, label: "E-posta", value: SITE.email },
-  { icon: MapPin, label: "Adres", value: SITE.address },
-  { icon: Clock, label: "Çalışma Saatleri", value: "Hafta içi 09:00 – 19:00" },
-];
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
+  const CONTACT_ITEMS = [
+    { icon: Phone, label: "Telefon", value: settings.phone },
+    { icon: Mail, label: "E-posta", value: settings.email },
+    { icon: MapPin, label: "Adres", value: settings.address },
+    { icon: Clock, label: "Çalışma Saatleri", value: "Hafta içi 09:00 – 19:00" },
+  ];
 
-export default function ContactPage() {
   return (
     <>
       <BreadcrumbJsonLd

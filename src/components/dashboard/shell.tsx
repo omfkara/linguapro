@@ -17,6 +17,7 @@ import {
   Award,
   UserCog,
   MessageSquare,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,7 @@ const NAV_BY_ROLE: Record<string, DashboardNavItem[]> = {
     { href: "/panel/yonetim/sinavlar", label: "Sınavlar", icon: ClipboardList },
     { href: "/panel/yonetim/seviye-testi", label: "Seviye Testi", icon: Gauge },
     { href: "/panel/yonetim/mesajlar", label: "Mesajlar", icon: MessageSquare },
+    { href: "/panel/yonetim/site-ayarlari", label: "Site Ayarları", icon: Settings },
   ],
   teacher: [
     { href: "/panel/ogretmen", label: "Genel Bakış", icon: LayoutDashboard, exact: true },

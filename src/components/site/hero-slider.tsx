@@ -6,60 +6,47 @@ import { ChevronLeft, ChevronRight, Play, Sparkles } from "lucide-react";
 import { LinkButton } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const SLIDES = [
-  {
-    eyebrow: "Canlı & Kayıtlı Dersler",
-    title: "Dünyayla konuşacak",
-    highlight: "özgüveni",
-    titleEnd: "kazanın",
-    description:
-      "Alanında uzman eğitmenlerle birebir ilerleyin, video kütüphanemizden istediğiniz an tekrar izleyin.",
-    stat: { value: "12.000+", label: "aktif öğrenci" },
-    gradient: "from-brand-600 via-brand-700 to-ink-950",
-  },
-  {
-    eyebrow: "Seviye Tespit Sınavı",
-    title: "Seviyenizi",
-    highlight: "2 dakikada",
-    titleEnd: "öğrenin",
-    description:
-      "Ücretsiz seviye tespit sınavımızla A1'den C2'ye tam olarak nerede olduğunuzu anında görün.",
-    stat: { value: "A1 – C2", label: "CEFR standardı" },
-    gradient: "from-accent-600 via-accent-500 to-brand-700",
-  },
-  {
-    eyebrow: "Ölçme & Değerlendirme",
-    title: "Online sınavlarla",
-    highlight: "ilerlemenizi",
-    titleEnd: "kanıtlayın",
-    description:
-      "Her kurs sonunda sertifikalı sınavlara girin, gelişiminizi somut verilerle takip edin.",
-    stat: { value: "%94", label: "başarı oranı" },
-    gradient: "from-ink-950 via-brand-800 to-brand-600",
-  },
+// Arka plan gradyanları slayt sırasına göre döner (görsel tasarım
+// tercihi olduğu için admin panelinden değiştirilmiyor, yalnızca metin
+// alanları düzenlenebilir).
+const GRADIENTS = [
+  "from-brand-600 via-brand-700 to-ink-950",
+  "from-accent-600 via-accent-500 to-brand-700",
+  "from-ink-950 via-brand-800 to-brand-600",
 ];
 
-export function HeroSlider() {
+export type HeroSlide = {
+  eyebrow: string;
+  title: string;
+  highlight: string;
+  titleEnd: string;
+  description: string;
+  statValue: string;
+  statLabel: string;
+};
+
+export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [paused, setPaused] = useState(false);
 
   const go = useCallback((next: number) => {
     setDirection(next > index ? 1 : -1);
-    setIndex(((next % SLIDES.length) + SLIDES.length) % SLIDES.length);
+    setIndex(((next % slides.length) + slides.length) % slides.length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index]);
+  }, [index, slides.length]);
 
   useEffect(() => {
     if (paused) return;
     const t = setInterval(() => {
       setDirection(1);
-      setIndex((i) => (i + 1) % SLIDES.length);
+      setIndex((i) => (i + 1) % slides.length);
     }, 6000);
     return () => clearInterval(t);
-  }, [paused]);
+  }, [paused, slides.length]);
 
-  const slide = SLIDES[index];
+  const slide = slides[index];
+  const gradient = GRADIENTS[index % GRADIENTS.length];
 
   return (
     <section
@@ -71,7 +58,7 @@ export function HeroSlider() {
       <div
         className={cn(
           "absolute inset-0 bg-gradient-to-br opacity-90 animate-gradient",
-          slide.gradient
+          gradient
         )}
       />
       <div className="absolute inset-0 bg-dot-grid opacity-20" />
@@ -124,10 +111,10 @@ export function HeroSlider() {
 
             <div className="mt-10 flex items-center gap-3">
               <span className="font-display text-3xl font-bold text-white">
-                {slide.stat.value}
+                {slide.statValue}
               </span>
               <span className="text-sm text-ink-100/70">
-                {slide.stat.label}
+                {slide.statLabel}
               </span>
             </div>
           </motion.div>
@@ -149,7 +136,7 @@ export function HeroSlider() {
           <ChevronLeft size={18} />
         </button>
         <div className="flex gap-2">
-          {SLIDES.map((_, i) => (
+          {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => go(i)}

@@ -5,14 +5,19 @@ import { PageHero } from "@/components/site/page-hero";
 import { CtaSection } from "@/components/site/cta-section";
 import { BreadcrumbJsonLd } from "@/components/site/json-ld";
 import { SITE } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/queries/settings";
 import { Target, Eye, Heart, Award } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Hakkımızda",
-  description:
-    "2016'dan bu yana LinguaPro Dil Akademisi; deneyimli eğitmenleri, teknolojik altyapısı ve öğrenci odaklı yaklaşımıyla binlerce kişiye dil öğretiyor.",
-  alternates: { canonical: "/hakkimizda" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seoTitles.hakkimizda || "Hakkımızda",
+    description:
+      settings.seoDescriptions.hakkimizda ||
+      "2016'dan bu yana LinguaPro Dil Akademisi; deneyimli eğitmenleri, teknolojik altyapısı ve öğrenci odaklı yaklaşımıyla binlerce kişiye dil öğretiyor.",
+    alternates: { canonical: "/hakkimizda" },
+  };
+}
 
 const VALUES = [
   {

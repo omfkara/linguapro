@@ -4,19 +4,28 @@ import { Navbar } from "@/components/site/navbar";
 import { Footer } from "@/components/site/footer";
 import { PageHero } from "@/components/site/page-hero";
 import { BreadcrumbJsonLd } from "@/components/site/json-ld";
-import { SITE, CEFR_LEVELS } from "@/lib/site-config";
+import { SITE } from "@/lib/site-config";
 import { auth } from "@/auth";
 import { db } from "@/db";
 import { exams } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { Clock, ListChecks, Award, ArrowRight } from "lucide-react";
+import { getSiteSettings } from "@/lib/queries/settings";
 
-export const metadata: Metadata = {
-  title: "Ücretsiz Seviye Tespit Sınavı",
-  description:
-    "CEFR standardına uygun ücretsiz seviye tespit sınavımızla A1'den C2'ye gerçek dil seviyenizi 15-20 dakikada öğrenin.",
-  alternates: { canonical: "/seviye-tespit-sinavi" },
-};
+// Bu sayfa veritabanına (site ayarları + sınav durumu) bağlıdır; build
+// anında statik olarak dışa aktarılmaya çalışılırsa hataya yol açar.
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seoTitles.seviyeTespitSinavi || "Ücretsiz Seviye Tespit Sınavı",
+    description:
+      settings.seoDescriptions.seviyeTespitSinavi ||
+      "CEFR standardına uygun ücretsiz seviye tespit sınavımızla A1'den C2'ye gerçek dil seviyenizi 15-20 dakikada öğrenin.",
+    alternates: { canonical: "/seviye-tespit-sinavi" },
+  };
+}
 
 const LEVEL_INFO = [
   { level: "A1", title: "Başlangıç", desc: "Temel kelime ve ifadeler" },
@@ -29,6 +38,7 @@ const LEVEL_INFO = [
 
 export default async function LevelTestLandingPage() {
   const session = await auth();
+  const settings = await getSiteSettings();
 
   const [levelTest] = await db
     .select({ id: exams.id })
@@ -52,9 +62,9 @@ export default async function LevelTestLandingPage() {
       <Navbar />
       <main>
         <PageHero
-          eyebrow="Ücretsiz & Anında Sonuç"
-          title="Gerçek dil seviyenizi 15-20 dakikada öğrenin"
-          description="CEFR standardına uygun sınavımızla A1'den C2'ye tam olarak nerede olduğunuzu görün, size özel kurs önerisi alın."
+          eyebrow={settings.levelTestEyebrow}
+          title={settings.levelTestTitle}
+          description={settings.levelTestDescription}
           breadcrumb="Seviye Tespit Sınavı"
         />
 
@@ -97,14 +107,10 @@ export default async function LevelTestLandingPage() {
 
           <div className="mt-16 rounded-3xl bg-gradient-to-br from-brand-600 to-ink-950 px-8 py-14 text-center shadow-2xl shadow-brand-900/20">
             <h2 className="font-display text-2xl font-bold text-white text-balance sm:text-3xl">
-              {levelTest
-                ? "Hazırsanız sınava başlayabilirsiniz"
-                : "Sınavımız çok yakında yayında"}
+              {levelTest ? settings.levelTestReadyTitle : settings.levelTestNotReadyTitle}
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-ink-100/80">
-              {session?.user
-                ? "Panelinizden sınava başlayın, sonucunuz hesabınıza kaydedilecek."
-                : "Sınava başlamak için önce ücretsiz bir hesap oluşturmanız gerekiyor."}
+              {session?.user ? settings.levelTestLoggedInText : settings.levelTestGuestText}
             </p>
             {levelTest && (
               <Link

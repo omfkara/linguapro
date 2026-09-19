@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { GraduationCap, Mail, Phone, MapPin } from "lucide-react";
 import { InstagramIcon, YoutubeIcon, LinkedinIcon } from "@/components/ui/social-icons";
-import { SITE } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/queries/settings";
 
 const COLS = [
   {
@@ -30,16 +30,26 @@ const COLS = [
   },
 ];
 
-export function Footer() {
+export async function Footer() {
+  const SITE = await getSiteSettings();
   return (
     <footer className="border-t border-ink-100 bg-ink-950 text-ink-300">
       <div className="mx-auto max-w-7xl px-5 py-16 lg:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Link href="/" className="flex items-center gap-2.5">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white">
-                <GraduationCap size={22} />
-              </span>
+              {SITE.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={SITE.logoUrl}
+                  alt={SITE.shortName}
+                  className="h-10 w-10 rounded-xl object-cover"
+                />
+              ) : (
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 text-white">
+                  <GraduationCap size={22} />
+                </span>
+              )}
               <span className="font-display text-lg font-bold text-white">
                 {SITE.shortName}
               </span>
@@ -49,9 +59,9 @@ export function Footer() {
             </p>
             <div className="mt-5 flex gap-3">
               {[
-                { icon: InstagramIcon, href: SITE.social.instagram },
-                { icon: YoutubeIcon, href: SITE.social.youtube },
-                { icon: LinkedinIcon, href: SITE.social.linkedin },
+                { icon: InstagramIcon, href: SITE.instagramUrl },
+                { icon: YoutubeIcon, href: SITE.youtubeUrl },
+                { icon: LinkedinIcon, href: SITE.linkedinUrl },
               ].map(({ icon: Icon, href }, i) => (
                 <a
                   key={i}
@@ -104,9 +114,9 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-ink-500 sm:flex-row">
           <p>
-            © {new Date().getFullYear()} {SITE.name}. Tüm hakları saklıdır.
+            © {new Date().getFullYear()} {SITE.siteName}. Tüm hakları saklıdır.
           </p>
-          <p>{SITE.foundedYear} yılından beri güvenle eğitim veriyoruz.</p>
+          <p>Güvenle eğitim veriyoruz.</p>
         </div>
       </div>
     </footer>

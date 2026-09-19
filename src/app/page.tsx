@@ -10,25 +10,33 @@ import { LevelTestTeaser } from "@/components/site/level-test-teaser";
 import { TestimonialsSection } from "@/components/site/testimonials-section";
 import { CtaSection } from "@/components/site/cta-section";
 import { OrganizationJsonLd } from "@/components/site/json-ld";
-import { SITE } from "@/lib/site-config";
+import { getSiteSettings } from "@/lib/queries/settings";
 
-export const metadata: Metadata = {
-  title: `${SITE.name} | ${SITE.tagline}`,
-  description: SITE.description,
-  alternates: { canonical: "/" },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  return {
+    title: settings.seoTitles.home || `${settings.siteName} | ${settings.tagline}`,
+    description: settings.seoDescriptions.home || settings.description,
+    alternates: { canonical: "/" },
+  };
+}
 
-export default function HomePage() {
+export default async function HomePage() {
+  const settings = await getSiteSettings();
   return (
     <>
       <OrganizationJsonLd />
       <Navbar />
       <main>
-        <HeroSlider />
-        <LanguagesMarquee />
+        <HeroSlider slides={settings.heroSlides} />
+        <LanguagesMarquee languages={settings.languages} />
         <FeaturesSection />
-        <StatsSection />
-        <HowItWorks />
+        <StatsSection stats={settings.stats} />
+        <HowItWorks
+          eyebrow={settings.howItWorksEyebrow}
+          title={settings.howItWorksTitle}
+          steps={settings.howItWorksSteps}
+        />
         <LevelTestTeaser />
         <TestimonialsSection />
         <CtaSection />
